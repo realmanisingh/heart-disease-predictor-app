@@ -25,7 +25,7 @@ st.write("The fbs is", fbs)
 ecg = st.radio(label="What is your resting ECG value(Please refer to the side bar for explanations on what each value represents)", options=[0, 1, 2])
 st.write("The ecg is", ecg)
 
-# Thal input
+# Thalach input
 thalach = st.number_input(label="Enter your maximum heart rate(bpm)", value=0)
 st.write("The thalach is", thalach)
 
@@ -36,3 +36,17 @@ st.write("The exang is", exang)
 # Oldpeak input
 oldpeak = st.number_input(label="What is your st depression value induced by exercise relative to rest")
 st.write("The oldpeak is", oldpeak)
+
+# Thal input
+thal = st.selectbox('Do you have thalassaemia? If so, is it reversible or a fixed defect?', ['', 'I do not have thalassaemia', 'Reversible', 'Fixed defect'], format_func=lambda x: 'Select an option' if x == '' else x)
+st.write("The thal is", thal)
+
+
+# Chest pain input
+cp = st.selectbox('Do you have chest pain? If so, which option best describes your chest pain?', ['', 'No chest pain', 'Typical angina', 'Atypical angina', 'Non-anginal pain'], format_func=lambda x: 'Select an option' if x == '' else x)
+st.write("The cp is", cp)
+
+
+# Ca input
+ca = st.radio(label='How many major arteries do you have blocked(stained with fluoroscopy)', options=[0, 1, 2, 3])
+st.write("The ca is", ca)
