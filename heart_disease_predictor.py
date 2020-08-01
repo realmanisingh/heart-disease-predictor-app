@@ -1,5 +1,10 @@
 # Importing libraries
 import streamlit as st
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LogisticRegression
+
 
 # Title and project description
 st.title("Heart Disease Predictor")
@@ -11,42 +16,123 @@ st.write("Fill in the input fields below to get a prediction")
 
 # Age input
 age = st.number_input(label="Enter your age", value=0)
-st.write("The age is", age)
 
 # Sex input
 sex =  st.selectbox(label="Select your sex", options=['',"Male", "Female"], format_func=lambda x: 'Select an option' if x == '' else x)
-st.write("The sex is", sex)
+# Mapping sex to 1 or 0
+if sex == 'Male':
+    sex = 1
+else:
+    sex = 0
 
 # Fbs input
 fbs = st.selectbox('Is your fasting blood sugar above 120 mg/dl?', ['', 'Yes', 'No'], format_func=lambda x: 'Select an option' if x == '' else x)
-st.write("The fbs is", fbs)
+# Mapping fbs to the appropriate value
+if fbs == 'Yes':
+    fbs = 1
+else:
+    fbs = 0
+
 
 # Ecg input
 ecg = st.radio(label="What is your resting ECG value(Please refer to the side bar for explanations on what each value represents)", options=[0, 1, 2])
-st.write("The ecg is", ecg)
 
 # Thalach input
 thalach = st.number_input(label="Enter your maximum heart rate(bpm)", value=0)
-st.write("The thalach is", thalach)
 
 # Exang input
 exang = st.selectbox('Do you experience chest pain when exercising?', ['', 'Yes', 'No'], format_func=lambda x: 'Select an option' if x == '' else x)
-st.write("The exang is", exang)
-
+# Mapping exang to the appropriate value
+if exang == 'Yes':
+    exang = 1
+else:
+    exang = 0
+    
 # Oldpeak input
 oldpeak = st.number_input(label="What is your st depression value induced by exercise relative to rest")
-st.write("The oldpeak is", oldpeak)
-
-# Thal input
-thal = st.selectbox('Do you have thalassaemia? If so, is it reversible or a fixed defect?', ['', 'I do not have thalassaemia', 'Reversible', 'Fixed defect'], format_func=lambda x: 'Select an option' if x == '' else x)
-st.write("The thal is", thal)
-
 
 # Chest pain input
 cp = st.selectbox('Do you have chest pain? If so, which option best describes your chest pain?', ['', 'No chest pain', 'Typical angina', 'Atypical angina', 'Non-anginal pain'], format_func=lambda x: 'Select an option' if x == '' else x)
-st.write("The cp is", cp)
-
+if cp == 'Typical angina':
+    cp = 1
+elif cp == 'Atypical angina':
+    cp = 2
+elif cp == 'Non-anginal pain':
+    cp = 3
+elif cp == 'No chest pain':
+    cp = 4
 
 # Ca input
 ca = st.radio(label='How many major arteries do you have blocked(stained with fluoroscopy)', options=[0, 1, 2, 3])
-st.write("The ca is", ca)
+
+# Thal input
+thal = st.selectbox('Do you have thalassaemia? If so, is it reversible or a fixed defect?', ['', 'I do not have thalassaemia', 'Reversible', 'Fixed defect'], format_func=lambda x: 'Select an option' if x == '' else x)
+if thal == 'I do not have thalassaemia':
+    thal = 3
+elif thal == 'Fixed defect':
+    thal = 6
+elif thal == 'Reversible':
+    thal = 7
+
+# Creating a function that will train the model and cache it
+
+@st.cache 
+def train_model():
+    """
+    Trains the logistic regression model and caches it
+    return: A trained logistic regression model
+    """
+    # Importing the Cleveland data
+    df_cleveland = pd.read_csv("/Users/mani/Desktop/heart-disease-predictor/data/cleveland_data.csv", index_col=0)
+    
+    # Removing the unnecessary features
+    df_cleveland.drop(['trest', 'chol', 'slope'], axis=1, inplace=True)
+    
+    # Separting the data into features and labels
+    X = df_cleveland.loc[:, df_cleveland.columns != "num"]
+    y = df_cleveland["num"]
+    
+    # Creating a logistic regression model
+    lr_classifier = LogisticRegression(tol=1e-6, solver='liblinear', max_iter=200,)
+    
+    # Training the model
+    lr_classifier.fit(X, y)
+    
+    # Return the model
+    
+    return lr_classifier
+
+model = train_model()
+
+# Putting the user input in an array to pass to the predict function
+input = [[
+    age,
+    sex,
+    cp,
+    fbs,
+    ecg,
+    thalach,
+    exang,
+    oldpeak,
+    ca,
+    thal
+]]
+
+# Only getting a prediction if all inputs fields have been completed
+
+# Counter that keeps track of the number of completed input fields
+is_empty = 0
+for inner in input:
+    for value in inner:
+        if value != '':
+            is_empty += 1
+            st.write(is_empty)
+
+
+
+st.write(input)
+# Getting a prediction from the model based on the user input
+
+if is_empty == 10:
+    prediction = model.predict_proba(input)
+    st.write(prediction[0][1])
