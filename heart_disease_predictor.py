@@ -6,7 +6,15 @@ import matplotlib.pyplot as plt
 from sklearn.linear_model import LogisticRegression
 
 # Sidebar
-st.sidebar.title("Parameter Descriptions")
+st.sidebar.title("Input Descriptions")
+st.sidebar.markdown(
+    "Resting ECG: common procedure used by doctors to check for signs of heart disease. Below are the corresponding numbers and what they mean."
+    )
+st.sidebar.markdown("* 0 - Normal")
+st.sidebar.markdown("* 1 - ST-T wave abnormality")
+st.sidebar.markdown("* 2 - Probable or definite left ventricular hypertrophy")
+
+
 
 # Title and project description
 st.title("Heart Disease Predictor")
@@ -140,6 +148,9 @@ button = st.button(label='Submit')
 # Getting a prediction from the model based on the user input
 if is_empty == 10 and button:
     prediction = model.predict_proba(input)
-    st.write(prediction[0][1])
+    proba = 100 * round(prediction[0][1], 2)
+    proba = str(proba)
+    
+    st.write("The probability of having heart disease is " + proba + "%")
 elif is_empty != 10 and button:
     st.write("Error: Please make sure all the input fields are filled in.")
