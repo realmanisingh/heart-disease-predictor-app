@@ -5,6 +5,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LogisticRegression
 
+# Sidebar
+st.sidebar.title("Parameter Descriptions")
 
 # Title and project description
 st.title("Heart Disease Predictor")
@@ -126,13 +128,18 @@ for inner in input:
     for value in inner:
         if value != '':
             is_empty += 1
-            st.write(is_empty)
+            #st.write(is_empty)
 
 
 
-st.write(input)
+#st.write(input)
+
+# Button for form submission
+button = st.button(label='Submit')
+
 # Getting a prediction from the model based on the user input
-
-if is_empty == 10:
+if is_empty == 10 and button:
     prediction = model.predict_proba(input)
     st.write(prediction[0][1])
+elif is_empty != 10 and button:
+    st.write("Error: Please make sure all the input fields are filled in.")
