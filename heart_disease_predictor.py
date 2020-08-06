@@ -5,6 +5,19 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LogisticRegression
 
+import os
+
+print(os.getcwd())
+os.chdir("/Users/mani/Desktop/heart-disease-predictor/app")
+print(os.getcwd())
+
+# Linking the CSS file
+def local_css(filename):
+    with open(filename) as f:
+        st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+
+local_css("style.css")
+
 # Sidebar
 st.sidebar.title("Input Descriptions")
 st.sidebar.markdown(
@@ -25,10 +38,10 @@ st.subheader("Directions:")
 st.write("Fill in the input fields below to get a prediction")
 
 # Age input
-age = st.number_input(label="Enter your age", value=0)
+age = st.number_input(label="Enter your age:", value=0)
 
 # Sex input
-sex =  st.selectbox(label="Select your sex", options=['',"Male", "Female"], format_func=lambda x: 'Select an option' if x == '' else x)
+sex =  st.selectbox(label="Select your sex:", options=['',"Male", "Female"], format_func=lambda x: 'Select an option' if x == '' else x)
 # Mapping sex to 1 or 0
 if sex == 'Male':
     sex = 1
@@ -45,10 +58,10 @@ else:
 
 
 # Ecg input
-ecg = st.radio(label="What is your resting ECG value(Please refer to the side bar for explanations on what each value represents)", options=[0, 1, 2])
+ecg = st.radio(label="What is your resting ECG value(Please refer to the side bar for explanations on what each value represents)?", options=[0, 1, 2])
 
 # Thalach input
-thalach = st.number_input(label="Enter your maximum heart rate(bpm)", value=0)
+thalach = st.number_input(label="Enter your maximum heart rate(bpm):", value=0)
 
 # Exang input
 exang = st.selectbox('Do you experience chest pain when exercising?', ['', 'Yes', 'No'], format_func=lambda x: 'Select an option' if x == '' else x)
@@ -59,7 +72,7 @@ else:
     exang = 0
     
 # Oldpeak input
-oldpeak = st.number_input(label="What is your st depression value induced by exercise relative to rest")
+oldpeak = st.number_input(label="What is your st depression value induced by exercise relative to rest?")
 
 # Chest pain input
 cp = st.selectbox('Do you have chest pain? If so, which option best describes your chest pain?', ['', 'No chest pain', 'Typical angina', 'Atypical angina', 'Non-anginal pain'], format_func=lambda x: 'Select an option' if x == '' else x)
@@ -73,7 +86,7 @@ elif cp == 'No chest pain':
     cp = 4
 
 # Ca input
-ca = st.radio(label='How many major arteries do you have blocked(stained with fluoroscopy)', options=[0, 1, 2, 3])
+ca = st.radio(label='How many major arteries do you have blocked(stained with fluoroscopy)?', options=[0, 1, 2, 3])
 
 # Thal input
 thal = st.selectbox('Do you have thalassaemia? If so, is it reversible or a fixed defect?', ['', 'I do not have thalassaemia', 'Reversible', 'Fixed defect'], format_func=lambda x: 'Select an option' if x == '' else x)
@@ -93,7 +106,7 @@ def train_model():
     return: A trained logistic regression model
     """
     # Importing the Cleveland data
-    df_cleveland = pd.read_csv("/Users/mani/Desktop/heart-disease-predictor/data/cleveland_data.csv", index_col=0)
+    df_cleveland = pd.read_csv("../data/cleveland_data.csv", index_col=0)
     
     # Removing the unnecessary features
     df_cleveland.drop(['trest', 'chol', 'slope'], axis=1, inplace=True)
@@ -154,3 +167,5 @@ if is_empty == 10 and button:
     st.write("The probability of having heart disease is " + proba + "%")
 elif is_empty != 10 and button:
     st.write("Error: Please make sure all the input fields are filled in.")
+    
+
