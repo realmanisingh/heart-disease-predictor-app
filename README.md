@@ -1,2 +1,2 @@
-# Cardiovascular Disease Predictor
-Predicting cardiovascular disease
+# Heart Disease Predictor
+Predicting heart disease
